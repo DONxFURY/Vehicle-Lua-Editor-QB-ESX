@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FiveM Vehicle Config Editor | ESX & QBCore</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --esx: #3498db;
+            --qb: #9b59b6;
+            --primary: #2563eb;
+            --secondary: #3b82f6;
+            --danger: #ef4444;
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --background: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #1e293b;
+            --border: #e2e8f0;
+            --radius: 8px;
+            --shadow: 0 1px 3px rgba(0,0,0,0.1);
+            --transition: all 0.2s ease;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --background: #0f172a;
+                --card-bg: #1e293b;
+                --text: #f8fafc;
+                --border: #334155;
+            }
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--background);
+            color: var(--text);
+            line-height: 1.6;
+            padding: 1rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin: 1.5rem 0;
+            position: relative;
+        }
+
+        h1 {
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            font-size: 2.2rem;
+        }
+
+        .framework-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .framework-tab {
+            padding: 0.5rem 1.5rem;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 2px solid transparent;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .framework-tab.active {
+            border-color: currentColor;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        .esx-tab {
+            background: rgba(52, 152, 219, 0.15);
+            color: var(--esx);
+        }
+
+        .qb-tab {
+            background: rgba(155, 89, 182, 0.15);
+            color: var(--qb);
+        }
+
+        .subtitle {
+            color: #64748b;
+            max-width: 600px;
+            margin: 0 auto 1.5rem;
+            text-align: center;
+            font-size: 1.05rem;
+        }
+
+        .toolbar {
+            display: grid;
+            gap: 1rem;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            margin-bottom: 1.5rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: var(--primary);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .card-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(37, 99, 235, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-size: 1.1rem;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .input-group {
+            margin-bottom: 1rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        input, select, button, textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            background: var(--card-bg);
+            color: var(--text);
+            transition: var(--transition);
+            font-family: inherit;
+            font-size: 0.95rem;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+        }
+
+        button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            justify-content: center;
+            font-weight: 500;
+            padding: 0.85rem;
+        }
+
+        button:hover {
+            background: var(--secondary);
+            transform: translateY(-2px);
+        }
+
+        .danger {
+            background: var(--danger);
+        }
+
+        .danger:hover {
+            background: #dc2626;
+        }
+
+        .success {
+            background: var(--success);
+        }
+
+        .success:hover {
+            background: #16a34a;
+        }
+
+        .warning {
+            background: var(--warning);
+        }
+
+        .warning:hover {
+            background: #d97706;
+        }
+
+        .secondary {
+            background: var(--secondary);
+        }
+
+        .pill-list {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+
+        .pill {
+            background: var(--background);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+        }
+
+        .pill button {
+            background: none;
+            color: var(--danger);
+            padding: 0;
+            width: auto;
+            height: auto;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px;
+            height: 20px;
+        }
+
+        .pill button:hover {
+            background: rgba(239, 68, 68, 0.1);
+            transform: none;
+        }
+
+        .vehicle-grid {
+            display: grid;
+            gap: 1.5rem;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            margin-bottom: 2rem;
+        }
+
+        .vehicle-card .fields {
+            display: grid;
+            gap: 1rem;
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .vehicle-card .card-header {
+            margin-bottom: 1rem;
+        }
+
+        .vehicle-card h3 {
+            margin: 0;
+            font-size: 1.1rem;
+            font-weight: 600;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 1rem;
+            right: 1rem;
+            background: var(--card-bg);
+            padding: 1rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            z-index: 1000;
+            transform: translateX(200%);
+            transition: transform 0.3s ease;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .toast-icon {
+            font-size: 1.25rem;
+        }
+
+        .toast.success {
+            border-left: 4px solid var(--success);
+        }
+
+        .toast.error {
+            border-left: 4px solid var(--danger);
+        }
+
+        .toast.info {
+            border-left: 4px solid var(--primary);
+        }
+
+        .category-count {
+            margin-left: 0.5rem;
+            background: var(--primary);
+            color: white;
+            padding: 0.2rem 0.5rem;
+            border-radius: 10px;
+            font-size: 0.75rem;
+        }
+
+        .bottom-toolbar {
+            display: grid;
+            gap: 1rem;
+            grid-template-columns: 1fr 1fr;
+            margin-top: 1rem;
+        }
+
+        .instructions {
+            margin: 1.5rem 0;
+            padding: 1.5rem;
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            border-left: 4px solid var(--warning);
+        }
+
+        .instructions h3 {
+            margin-bottom: 1rem;
+            color: var(--warning);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .instructions ul {
+            padding-left: 1.5rem;
+            margin: 1rem 0;
+        }
+
+        .instructions li {
+            margin-bottom: 0.5rem;
+        }
+
+        .framework-info {
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius);
+            margin: 0.5rem 0;
+            font-size: 0.9rem;
+        }
+
+        .esx-info {
+            background: rgba(52, 152, 219, 0.1);
+            border-left: 3px solid var(--esx);
+        }
+
+        .qb-info {
+            background: rgba(155, 89, 182, 0.1);
+            border-left: 3px solid var(--qb);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem 2rem;
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin: 2rem 0;
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .empty-state h3 {
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
+
+        .empty-state p {
+            color: #64748b;
+            margin-bottom: 1.5rem;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .stats {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 1rem;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 1rem;
+            text-align: center;
+            box-shadow: var(--shadow);
+            flex: 1;
+            max-width: 200px;
+        }
+
+        .stat-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin: 0.5rem 0;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: #64748b;
+        }
+
+        @media (max-width: 768px) {
+            .toolbar, .bottom-toolbar {
+                grid-template-columns: 1fr;
+            }
+            
+            .vehicle-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .stat-card {
+                width: 100%;
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1><i class="fas fa-car"></i> FiveM Vehicle Configuration Editor</h1>
+        <div class="subtitle">Manage and export vehicle configurations for both ESX and QBCore frameworks</div>
+        
+        <div class="framework-tabs">
+            <div class="framework-tab esx-tab active" data-framework="esx">
+                <i class="fab fa-js"></i> ESX Framework
+            </div>
+            <div class="framework-tab qb-tab" data-framework="qb">
+                <i class="fas fa-cube"></i> QBCore Framework
+            </div>
+        </div>
+    </div>
+    
+    <div class="instructions">
+        <h3><i class="fas fa-info-circle"></i> How to use this editor</h3>
+        <ul>
+            <li><strong>Switch between ESX/QBCore</strong> using the tabs above to configure vehicles for your framework</li>
+            <li><strong>Add categories</strong> to organize your vehicles (e.g., "super", "sedan", "motorcycle")</li>
+            <li><strong>Add vehicles</strong> with model name, display name, price, and other attributes</li>
+            <li><strong>Import existing configurations</strong> to edit them visually</li>
+            <li><strong>Export to Lua</strong> when finished to get the correctly formatted code for your framework</li>
+        </ul>
+    </div>
+
+    <div class="toolbar">
+        <div class="card">
+            <div class="card-header">
+                <div class="card-icon">
+                    <i class="fas fa-tags"></i>
+                </div>
+                <h2 class="card-title">Categories</h2>
+            </div>
+            <div class="input-group">
+                <input type="text" id="new-category" placeholder="New category name">
+                <button id="add-category" class="success"><i class="fas fa-plus"></i> Add Category</button>
+            </div>
+            <div class="pill-list" id="category-list"></div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <div class="card-icon">
+                    <i class="fas fa-car"></i>
+                </div>
+                <h2 class="card-title">Vehicle Management</h2>
+            </div>
+            <div class="input-group">
+                <label for="category">Select Category</label>
+                <select id="category"></select>
+            </div>
+            <div class="actions">
+                <button id="add-vehicle" class="success"><i class="fas fa-plus"></i> Add Vehicle</button>
+                <button id="import-lua" class="secondary"><i class="fas fa-file-import"></i> Import Lua</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="stats">
+        <div class="stat-card">
+            <div class="stat-label">Total Vehicles</div>
+            <div class="stat-value" id="total-vehicles">0</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Categories</div>
+            <div class="stat-value" id="total-categories">0</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Active Framework</div>
+            <div class="stat-value" id="active-framework">ESX</div>
+        </div>
+    </div>
+    
+    <div id="vehicle-container">
+        <div class="vehicle-grid" id="vehicle-list"></div>
+        
+        <div class="empty-state" id="empty-state">
+            <i class="fas fa-car"></i>
+            <h3>No Vehicles Added</h3>
+            <p>Get started by adding your first vehicle using the "Add Vehicle" button above.</p>
+            <button id="first-vehicle" class="success"><i class="fas fa-plus"></i> Add First Vehicle</button>
+        </div>
+    </div>
+
+    <div class="bottom-toolbar">
+        <button id="clear-all" class="danger"><i class="fas fa-trash-alt"></i> Clear All Data</button>
+        <button id="save-lua" class="success"><i class="fas fa-download"></i> Download vehicle.lua</button>
+    </div>
+
+    <div class="toast" id="toast">
+        <div class="toast-icon">
+            <i class="fas fa-check-circle"></i>
+        </div>
+        <div class="toast-message">Operation completed successfully!</div>
+    </div>
+
+    <script>
+        // State management
+        const state = {
+            vehicles: JSON.parse(localStorage.getItem('vehicles') || '[]') || [],
+            categories: JSON.parse(localStorage.getItem('categories') || '[]') || ['super', 'sedan', 'suv', 'motorcycle'],
+            shopTypes: new Set(['none', 'cardealer', 'air', 'boat', 'bike']),
+            framework: localStorage.getItem('framework') || 'esx'
+        };
+
+        // DOM elements
+        const elements = {
+            vehicleList: document.getElementById('vehicle-list'),
+            categorySelect: document.getElementById('category'),
+            addVehicleBtn: document.getElementById('add-vehicle'),
+            saveLuaBtn: document.getElementById('save-lua'),
+            addCategoryBtn: document.getElementById('add-category'),
+            newCategoryInput: document.getElementById('new-category'),
+            categoryList: document.getElementById('category-list'),
+            toast: document.getElementById('toast'),
+            clearAllBtn: document.getElementById('clear-all'),
+            frameworkTabs: document.querySelectorAll('.framework-tab'),
+            emptyState: document.getElementById('empty-state'),
+            firstVehicleBtn: document.getElementById('first-vehicle'),
+            totalVehicles: document.getElementById('total-vehicles'),
+            totalCategories: document.getElementById('total-categories'),
+            activeFramework: document.getElementById('active-framework'),
+            vehicleContainer: document.getElementById('vehicle-container')
+        };
+
+        // Initialize the application
+        function init() {
+            renderCategories();
+            renderVehicles();
+            setupEventListeners();
+            updateStats();
+            
+            // Set active framework
+            document.querySelector(`.framework-tab[data-framework="${state.framework}"]`).classList.add('active');
+            elements.activeFramework.textContent = state.framework.toUpperCase();
+        }
+
+        // Show toast notification
+        function showToast(message, type = 'success') {
+            elements.toast.className = `toast ${type}`;
+            elements.toast.querySelector('.toast-message').textContent = message;
+            
+            // Set appropriate icon
+            const icon = elements.toast.querySelector('.toast-icon');
+            if (type === 'success') {
+                icon.innerHTML = '<i class="fas fa-check-circle"></i>';
+            } else if (type === 'error') {
+                icon.innerHTML = '<i class="fas fa-exclamation-circle"></i>';
+            } else {
+                icon.innerHTML = '<i class="fas fa-info-circle"></i>';
+            }
+            
+            elements.toast.classList.add('show');
+            setTimeout(() => {
+                elements.toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Update statistics
+        function updateStats() {
+            elements.totalVehicles.textContent = state.vehicles.length;
+            elements.totalCategories.textContent = state.categories.length;
+        }
+
+        // Get category counts
+        function getCategoryCounts() {
+            const counts = {};
+            state.vehicles.forEach(vehicle => {
+                counts[vehicle.category] = (counts[vehicle.category] || 0) + 1;
+            });
+            return counts;
+        }
+
+        // Render categories
+        function renderCategories() {
+            const counts = getCategoryCounts();
+            
+            elements.categorySelect.innerHTML = state.categories
+                .map(c => `<option value="${c}">${c} (${counts[c] || 0})</option>`)
+                .join('');
+
+            elements.categoryList.innerHTML = state.categories
+                .map(c => `
+                    <div class="pill">
+                        ${c} <span class="category-count">${counts[c] || 0}</span>
+                        <button data-category="${c}"><i class="fas fa-times"></i></button>
+                    </div>
+                `).join('');
+        }
+
+        // Render vehicles
+        function renderVehicles() {
+            if (state.vehicles.length === 0) {
+                elements.vehicleList.innerHTML = '';
+                elements.emptyState.style.display = 'block';
+                return;
+            }
+            
+            elements.emptyState.style.display = 'none';
+            
+            elements.vehicleList.innerHTML = state.vehicles
+                .map((vehicle, index) => `
+                    <div class="card vehicle-card">
+                        <div class="card-header">
+                            <div class="card-icon">
+                                <i class="fas fa-car"></i>
+                            </div>
+                            <h3>${vehicle.name || 'New Vehicle'}</h3>
+                        </div>
+                        <div class="fields">
+                            <div class="input-group">
+                                <label>Model</label>
+                                <input type="text" value="${vehicle.model}" 
+                                       placeholder="Model" data-index="${index}" data-field="model">
+                            </div>
+                            <div class="input-group">
+                                <label>Name</label>
+                                <input type="text" value="${vehicle.name}" 
+                                       placeholder="Name" data-index="${index}" data-field="name">
+                            </div>
+                            <div class="input-group">
+                                <label>Brand</label>
+                                <input type="text" value="${vehicle.brand}" 
+                                       placeholder="Brand" data-index="${index}" data-field="brand">
+                            </div>
+                            <div class="input-group">
+                                <label>Price</label>
+                                <input type="number" value="${vehicle.price}" 
+                                       placeholder="Price" data-index="${index}" data-field="price">
+                            </div>
+                            <div class="input-group">
+                                <label>Category</label>
+                                <select data-index="${index}" data-field="category">
+                                    ${state.categories.map(c => `
+                                        <option value="${c}" ${c === vehicle.category ? 'selected' : ''}>${c}</option>
+                                    `).join('')}
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <label>Type</label>
+                                <select data-index="${index}" data-field="type">
+                                    <option value="automobile" ${vehicle.type === 'automobile' ? 'selected' : ''}>Automobile</option>
+                                    <option value="bike" ${vehicle.type === 'bike' ? 'selected' : ''}>Bike</option>
+                                    <option value="boat" ${vehicle.type === 'boat' ? 'selected' : ''}>Boat</option>
+                                    <option value="helicopter" ${vehicle.type === 'helicopter' ? 'selected' : ''}>Helicopter</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <label>Shop Type</label>
+                                <select data-index="${index}" data-field="shop">
+                                    ${Array.from(state.shopTypes).map(s => `
+                                        <option value="${s}" ${s === vehicle.shop ? 'selected' : ''}>${s}</option>
+                                    `).join('')}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="actions">
+                            <button class="danger" data-index="${index}"><i class="fas fa-trash-alt"></i> Delete</button>
+                        </div>
+                    </div>
+                `).join('');
+                
+            renderCategories();
+            updateStats();
+        }
+
+        // Save state to localStorage
+        function saveState() {
+            localStorage.setItem('vehicles', JSON.stringify(state.vehicles));
+            localStorage.setItem('categories', JSON.stringify(state.categories));
+            localStorage.setItem('framework', state.framework);
+        }
+
+        // Parse Lua data
+        function parseLuaData(luaContent) {
+            const shopPattern = /shop\s*=\s*'([^']+)'/g;
+            const foundShopTypes = new Set(['none']);
+            let shopMatch;
+            
+            while ((shopMatch = shopPattern.exec(luaContent)) !== null) {
+                foundShopTypes.add(shopMatch[1]);
+            }
+
+            state.shopTypes = foundShopTypes;
+
+            // Different patterns for ESX and QBCore
+            let vehiclePattern;
+            if (state.framework === 'esx') {
+                vehiclePattern = /{[\s\S]*?model\s*=\s*'([^']+)'[\s\S]*?name\s*=\s*'([^']+)'[\s\S]*?brand\s*=\s*'([^']+)'[\s\S]*?price\s*=\s*(\d+)[\s\S]*?category\s*=\s*'([^']+)'[\s\S]*?type\s*=\s*'([^']+)'[\s\S]*?shop\s*=\s*'([^']+)'/g;
+            } else {
+                // QBCore pattern
+                vehiclePattern = /\[\s*'([^']+)'\s*\]\s*=\s*{[\s\S]*?name\s*=\s*'([^']+)'[\s\S]*?brand\s*=\s*'([^']+)'[\s\S]*?price\s*=\s*(\d+)[\s\S]*?category\s*=\s*'([^']+)'[\s\S]*?type\s*=\s*'([^']+)'[\s\S]*?shop\s*=\s*'([^']+)'/g;
+            }
+            
+            const vehicles = [];
+            let vehicleMatch;
+            
+            while ((vehicleMatch = vehiclePattern.exec(luaContent)) !== null) {
+                vehicles.push({
+                    model: vehicleMatch[1],
+                    name: vehicleMatch[2],
+                    brand: vehicleMatch[3],
+                    price: parseInt(vehicleMatch[4]),
+                    category: vehicleMatch[5],
+                    type: vehicleMatch[6],
+                    shop: vehicleMatch[7]
+                });
+            }
+            
+            return vehicles;
+        }
+
+        // Generate Lua content based on framework
+        function generateLuaContent() {
+            const grouped = {};
+            state.vehicles.forEach(vehicle => {
+                if (!grouped[vehicle.category]) grouped[vehicle.category] = [];
+                grouped[vehicle.category].push(vehicle);
+            });
+
+            let luaContent = '';
+            
+            if (state.framework === 'esx') {
+                luaContent = 'return {\n';
+                Object.entries(grouped).forEach(([category, vehicles]) => {
+                    luaContent += `\t--- ${category} (${vehicles.length})\n`;
+                    vehicles.forEach(vehicle => {
+                        luaContent += `\t{ model = '${vehicle.model}', name = '${vehicle.name}', brand = '${vehicle.brand}', ` +
+                                      `price = ${vehicle.price}, category = '${vehicle.category}', ` +
+                                      `type = '${vehicle.type}', shop = '${vehicle.shop}' },\n`;
+                    });
+                });
+                luaContent = luaContent.slice(0, -2) + '\n}';
+            } else {
+                // QBCore format
+                luaContent = 'QBShared.Vehicles = {\n';
+                Object.entries(grouped).forEach(([category, vehicles]) => {
+                    luaContent += `\t--- ${category} (${vehicles.length})\n`;
+                    vehicles.forEach(vehicle => {
+                        luaContent += `\t['${vehicle.model}'] = {\n`;
+                        luaContent += `\t\tname = '${vehicle.name}',\n`;
+                        luaContent += `\t\tbrand = '${vehicle.brand}',\n`;
+                        luaContent += `\t\tprice = ${vehicle.price},\n`;
+                        luaContent += `\t\tcategory = '${vehicle.category}',\n`;
+                        luaContent += `\t\ttype = '${vehicle.type}',\n`;
+                        luaContent += `\t\tshop = '${vehicle.shop}',\n`;
+                        luaContent += `\t},\n`;
+                    });
+                });
+                luaContent += '}';
+            }
+
+            return luaContent;
+        }
+
+        // Clear all data
+        function clearAllData() {
+            if(confirm('⚠️ Are you sure you want to delete ALL vehicles and categories? This cannot be undone!')) {
+                state.vehicles = [];
+                state.categories = ['super', 'sedan', 'suv', 'motorcycle'];
+                state.shopTypes = new Set(['none', 'cardealer', 'air', 'boat', 'bike']);
+                saveState();
+                init();
+                showToast('All data cleared successfully');
+            }
+        }
+
+        // Add new vehicle
+        function addVehicle() {
+            state.vehicles.push({
+                model: '',
+                name: '',
+                brand: '',
+                price: 0,
+                category: elements.categorySelect.value,
+                type: 'automobile',
+                shop: 'none'
+            });
+            renderVehicles();
+            saveState();
+            showToast('Vehicle added');
+        }
+
+        // Set up event listeners
+        function setupEventListeners() {
+            // Vehicle input changes
+            elements.vehicleList.addEventListener('input', e => {
+                const target = e.target;
+                if (target.matches('input, select')) {
+                    const index = target.dataset.index;
+                    const field = target.dataset.field;
+                    state.vehicles[index][field] = target.value;
+                    saveState();
+                    renderCategories();
+                }
+            });
+
+            // Delete vehicle
+            elements.vehicleList.addEventListener('click', e => {
+                if (e.target.closest('.danger')) {
+                    const index = e.target.closest('.danger').dataset.index;
+                    state.vehicles.splice(index, 1);
+                    renderVehicles();
+                    saveState();
+                    showToast('Vehicle removed');
+                }
+            });
+
+            // Add category
+            elements.addCategoryBtn.addEventListener('click', () => {
+                const newCat = elements.newCategoryInput.value.trim();
+                if (!newCat) return showToast('Enter category name', 'error');
+                if (state.categories.includes(newCat)) return showToast('Category exists', 'error');
+                
+                state.categories.push(newCat);
+                elements.newCategoryInput.value = '';
+                renderCategories();
+                saveState();
+                showToast(`Added category: ${newCat}`);
+            });
+
+            // Remove category
+            elements.categoryList.addEventListener('click', e => {
+                const btn = e.target.closest('button');
+                if (btn && btn.dataset.category) {
+                    const category = btn.dataset.category;
+                    state.categories = state.categories.filter(c => c !== category);
+                    
+                    // Remove vehicles in this category
+                    state.vehicles = state.vehicles.filter(v => v.category !== category);
+                    
+                    renderCategories();
+                    renderVehicles();
+                    saveState();
+                    showToast(`Removed category: ${category}`);
+                }
+            });
+
+            // Add vehicle
+            elements.addVehicleBtn.addEventListener('click', addVehicle);
+            elements.firstVehicleBtn.addEventListener('click', addVehicle);
+            
+            // Import Lua
+            document.getElementById('import-lua').addEventListener('click', () => {
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = '.lua';
+                input.onchange = e => {
+                    const file = e.target.files[0];
+                    const reader = new FileReader();
+                    reader.onload = () => {
+                        try {
+                            const vehicles = parseLuaData(reader.result);
+                            state.vehicles = vehicles;
+                            const newCategories = [...new Set(vehicles.map(v => v.category))];
+                            state.categories = Array.from(new Set([...state.categories, ...newCategories]));
+                            saveState();
+                            init();
+                            showToast(`Imported ${vehicles.length} vehicles`);
+                        } catch (e) {
+                            showToast('Invalid Lua file', 'error');
+                        }
+                    };
+                    reader.readAsText(file);
+                };
+                input.click();
+            });
+
+            // Save Lua
+            elements.saveLuaBtn.addEventListener('click', () => {
+                const luaContent = generateLuaContent();
+                const blob = new Blob([luaContent], { type: 'text/plain' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = state.framework === 'esx' ? 'esx_vehicles.lua' : 'qb_vehicles.lua';
+                a.click();
+                showToast('Lua file exported');
+            });
+
+            // Clear all data
+            elements.clearAllBtn.addEventListener('click', clearAllData);
+            
+            // Framework switching
+            elements.frameworkTabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    elements.frameworkTabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    state.framework = tab.dataset.framework;
+                    elements.activeFramework.textContent = state.framework.toUpperCase();
+                    saveState();
+                    showToast(`Switched to ${state.framework.toUpperCase()} framework`);
+                });
+            });
+        }
+
+        // Initialize the app
+        init();
+    </script>
+</body>
+</html>
