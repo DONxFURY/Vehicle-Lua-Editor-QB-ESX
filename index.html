@@ -21,6 +21,7 @@
             --radius: 8px;
             --shadow: 0 1px 3px rgba(0,0,0,0.1);
             --transition: all 0.2s ease;
+            --highlight: rgba(37, 99, 235, 0.1);
         }
 
         @media (prefers-color-scheme: dark) {
@@ -29,6 +30,7 @@
                 --card-bg: #1e293b;
                 --text: #f8fafc;
                 --border: #334155;
+                --highlight: rgba(37, 99, 235, 0.2);
             }
         }
 
@@ -44,7 +46,7 @@
             color: var(--text);
             line-height: 1.6;
             padding: 1rem;
-            max-width: 1400px;
+            max-width: 1600px;
             margin: 0 auto;
         }
 
@@ -58,7 +60,20 @@
             font-weight: 700;
             color: var(--primary);
             margin-bottom: 0.5rem;
-            font-size: 2.2rem;
+            font-size: 2.4rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+        }
+
+        .header-badge {
+            background: var(--primary);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
         }
 
         .framework-tabs {
@@ -69,7 +84,7 @@
         }
 
         .framework-tab {
-            padding: 0.5rem 1.5rem;
+            padding: 0.75rem 1.75rem;
             border-radius: 30px;
             font-weight: 600;
             cursor: pointer;
@@ -78,11 +93,12 @@
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            font-size: 1.05rem;
         }
 
         .framework-tab.active {
             border-color: currentColor;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            box-shadow: 0 0 15px rgba(0,0,0,0.15);
         }
 
         .esx-tab {
@@ -97,27 +113,29 @@
 
         .subtitle {
             color: #64748b;
-            max-width: 600px;
+            max-width: 700px;
             margin: 0 auto 1.5rem;
             text-align: center;
-            font-size: 1.05rem;
+            font-size: 1.1rem;
+            line-height: 1.7;
         }
 
         .toolbar {
             display: grid;
-            gap: 1rem;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             margin-bottom: 1.5rem;
         }
 
         .card {
             background: var(--card-bg);
             border-radius: var(--radius);
-            padding: 1.5rem;
+            padding: 1.75rem;
             box-shadow: var(--shadow);
             transition: var(--transition);
             position: relative;
             overflow: hidden;
+            border: 1px solid var(--border);
         }
 
         .card::before {
@@ -134,47 +152,48 @@
             display: flex;
             align-items: center;
             gap: 0.75rem;
-            margin-bottom: 1.25rem;
+            margin-bottom: 1.5rem;
         }
 
         .card-icon {
-            width: 40px;
-            height: 40px;
+            width: 42px;
+            height: 42px;
             border-radius: 50%;
             background: rgba(37, 99, 235, 0.1);
             display: flex;
             align-items: center;
             justify-content: center;
             color: var(--primary);
-            font-size: 1.1rem;
+            font-size: 1.2rem;
         }
 
         .card-title {
-            font-size: 1.25rem;
-            font-weight: 600;
+            font-size: 1.35rem;
+            font-weight: 700;
         }
 
         .input-group {
-            margin-bottom: 1rem;
+            margin-bottom: 1.25rem;
         }
 
         label {
             display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-            font-size: 0.9rem;
+            margin-bottom: 0.6rem;
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--text);
         }
 
         input, select, button, textarea {
             width: 100%;
-            padding: 0.75rem;
+            padding: 0.85rem;
             border: 2px solid var(--border);
             border-radius: var(--radius);
             background: var(--card-bg);
             color: var(--text);
             transition: var(--transition);
             font-family: inherit;
-            font-size: 0.95rem;
+            font-size: 1rem;
         }
 
         input:focus, select:focus, textarea:focus {
@@ -192,13 +211,17 @@
             align-items: center;
             gap: 0.5rem;
             justify-content: center;
-            font-weight: 500;
-            padding: 0.85rem;
+            font-weight: 600;
+            padding: 0.9rem;
+            font-size: 1rem;
+            border-radius: var(--radius);
+            transition: all 0.3s ease;
         }
 
         button:hover {
             background: var(--secondary);
-            transform: translateY(-2px);
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
 
         .danger {
@@ -231,19 +254,26 @@
 
         .pill-list {
             display: flex;
-            gap: 0.5rem;
+            gap: 0.75rem;
             flex-wrap: wrap;
-            margin-top: 1rem;
+            margin-top: 1.25rem;
         }
 
         .pill {
             background: var(--background);
-            padding: 0.5rem 1rem;
+            padding: 0.6rem 1.2rem;
             border-radius: 20px;
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            border: 1px solid var(--border);
+            transition: var(--transition);
+        }
+
+        .pill:hover {
+            background: var(--highlight);
         }
 
         .pill button {
@@ -256,8 +286,9 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 20px;
-            height: 20px;
+            width: 22px;
+            height: 22px;
+            transition: var(--transition);
         }
 
         .pill button:hover {
@@ -267,50 +298,99 @@
 
         .vehicle-grid {
             display: grid;
-            gap: 1.5rem;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            margin-bottom: 2rem;
+            gap: 1.75rem;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            margin-bottom: 2.5rem;
         }
 
-        .vehicle-card .fields {
-            display: grid;
-            gap: 1rem;
-            grid-template-columns: repeat(2, 1fr);
+        .vehicle-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            transform-origin: center;
+        }
+
+        .vehicle-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
         }
 
         .vehicle-card .card-header {
-            margin-bottom: 1rem;
+            margin-bottom: 1.25rem;
+            justify-content: space-between;
         }
 
         .vehicle-card h3 {
             margin: 0;
-            font-size: 1.1rem;
-            font-weight: 600;
+            font-size: 1.2rem;
+            font-weight: 700;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
+            flex: 1;
+        }
+
+        .vehicle-image {
+            height: 160px;
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            border-radius: var(--radius);
+            margin-bottom: 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 1.5rem;
+            text-align: center;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .vehicle-image::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(0,0,0,0.2), rgba(0,0,0,0));
+        }
+
+        .vehicle-image .model-name {
+            position: relative;
+            z-index: 2;
+            padding: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .fields {
+            display: grid;
+            gap: 1.25rem;
+            grid-template-columns: repeat(2, 1fr);
         }
 
         .actions {
             display: flex;
-            gap: 0.5rem;
-            margin-top: 1rem;
+            gap: 0.75rem;
+            margin-top: 1.5rem;
         }
 
         .toast {
             position: fixed;
-            bottom: 1rem;
-            right: 1rem;
+            bottom: 1.5rem;
+            right: 1.5rem;
             background: var(--card-bg);
-            padding: 1rem;
+            padding: 1.25rem;
             border-radius: var(--radius);
-            box-shadow: var(--shadow);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
             display: flex;
             align-items: center;
-            gap: 0.75rem;
+            gap: 1rem;
             z-index: 1000;
             transform: translateX(200%);
-            transition: transform 0.3s ease;
+            transition: transform 0.4s ease;
+            border-left: 5px solid var(--success);
+            max-width: 400px;
         }
 
         .toast.show {
@@ -318,162 +398,329 @@
         }
 
         .toast-icon {
-            font-size: 1.25rem;
+            font-size: 1.5rem;
+            flex-shrink: 0;
         }
 
         .toast.success {
-            border-left: 4px solid var(--success);
+            border-left-color: var(--success);
         }
 
         .toast.error {
-            border-left: 4px solid var(--danger);
+            border-left-color: var(--danger);
+        }
+
+        .toast.warning {
+            border-left-color: var(--warning);
         }
 
         .toast.info {
-            border-left: 4px solid var(--primary);
+            border-left-color: var(--primary);
         }
 
         .category-count {
             margin-left: 0.5rem;
             background: var(--primary);
             color: white;
-            padding: 0.2rem 0.5rem;
+            padding: 0.25rem 0.75rem;
             border-radius: 10px;
-            font-size: 0.75rem;
+            font-size: 0.8rem;
+            font-weight: 600;
         }
 
         .bottom-toolbar {
             display: grid;
-            gap: 1rem;
+            gap: 1.25rem;
             grid-template-columns: 1fr 1fr;
-            margin-top: 1rem;
+            margin-top: 1.5rem;
         }
 
         .instructions {
-            margin: 1.5rem 0;
-            padding: 1.5rem;
+            margin: 1.75rem 0;
+            padding: 1.75rem;
             background: var(--card-bg);
             border-radius: var(--radius);
             box-shadow: var(--shadow);
-            border-left: 4px solid var(--warning);
+            border-left: 5px solid var(--warning);
         }
 
         .instructions h3 {
-            margin-bottom: 1rem;
+            margin-bottom: 1.25rem;
             color: var(--warning);
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 0.75rem;
+            font-size: 1.3rem;
         }
 
         .instructions ul {
-            padding-left: 1.5rem;
-            margin: 1rem 0;
+            padding-left: 1.75rem;
+            margin: 1.25rem 0;
         }
 
         .instructions li {
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.75rem;
+            line-height: 1.7;
         }
 
         .framework-info {
-            padding: 0.5rem 1rem;
+            padding: 0.75rem 1.25rem;
             border-radius: var(--radius);
-            margin: 0.5rem 0;
-            font-size: 0.9rem;
+            margin: 0.75rem 0;
+            font-size: 0.95rem;
+            line-height: 1.6;
         }
 
         .esx-info {
             background: rgba(52, 152, 219, 0.1);
-            border-left: 3px solid var(--esx);
+            border-left: 4px solid var(--esx);
         }
 
         .qb-info {
             background: rgba(155, 89, 182, 0.1);
-            border-left: 3px solid var(--qb);
+            border-left: 4px solid var(--qb);
         }
 
         .empty-state {
             text-align: center;
-            padding: 3rem 2rem;
+            padding: 3.5rem 2rem;
             background: var(--card-bg);
             border-radius: var(--radius);
             box-shadow: var(--shadow);
-            margin: 2rem 0;
+            margin: 2.5rem 0;
+            border: 2px dashed var(--border);
         }
 
         .empty-state i {
-            font-size: 3rem;
+            font-size: 4rem;
             color: var(--primary);
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem;
+            opacity: 0.7;
         }
 
         .empty-state h3 {
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.75rem;
             color: var(--primary);
+            font-size: 1.8rem;
         }
 
         .empty-state p {
             color: #64748b;
-            margin-bottom: 1.5rem;
+            margin-bottom: 2rem;
             max-width: 500px;
             margin-left: auto;
             margin-right: auto;
+            font-size: 1.1rem;
+            line-height: 1.7;
         }
 
         .stats {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            margin-top: 1rem;
+            display: grid;
+            gap: 1.25rem;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            margin: 1.5rem 0 2.5rem;
         }
 
         .stat-card {
             background: var(--card-bg);
             border-radius: var(--radius);
-            padding: 1rem;
+            padding: 1.5rem 1.25rem;
             text-align: center;
             box-shadow: var(--shadow);
-            flex: 1;
-            max-width: 200px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: var(--transition);
+            border: 1px solid var(--border);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: rgba(37, 99, 235, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-size: 1.75rem;
+            margin-bottom: 1rem;
         }
 
         .stat-value {
-            font-size: 1.75rem;
-            font-weight: 700;
+            font-size: 2rem;
+            font-weight: 800;
             color: var(--primary);
-            margin: 0.5rem 0;
+            margin: 0.25rem 0;
         }
 
         .stat-label {
-            font-size: 0.85rem;
+            font-size: 0.95rem;
             color: #64748b;
+            font-weight: 600;
         }
 
-        @media (max-width: 768px) {
+        .search-bar {
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .search-bar input {
+            padding-left: 3.5rem;
+            font-size: 1.1rem;
+            height: 60px;
+            border-radius: 50px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary);
+            font-size: 1.5rem;
+        }
+
+        .category-tabs {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+        }
+
+        .category-tab {
+            padding: 0.75rem 1.5rem;
+            background: var(--background);
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 2px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .category-tab.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .category-tab .count {
+            background: rgba(255,255,255,0.2);
+            padding: 0.15rem 0.5rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+        }
+
+        .action-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--background);
+            border: 1px solid var(--border);
+            color: var(--text);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .action-button:hover {
+            background: var(--highlight);
+            transform: scale(1.1);
+        }
+
+        .action-button.duplicate:hover {
+            color: var(--success);
+        }
+
+        .action-button.delete:hover {
+            color: var(--danger);
+        }
+
+        .vehicle-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-left: auto;
+        }
+
+        .premium-badge {
+            background: linear-gradient(45deg, #ff9a9e, #fad0c4);
+            color: #fff;
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            margin-left: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        @media (max-width: 992px) {
             .toolbar, .bottom-toolbar {
                 grid-template-columns: 1fr;
             }
             
             .vehicle-grid {
+                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .vehicle-grid {
                 grid-template-columns: 1fr;
             }
             
-            .stats {
+            .category-tabs {
+                overflow-x: auto;
+                padding-bottom: 0.5rem;
+                flex-wrap: nowrap;
+            }
+            
+            .framework-tabs {
                 flex-direction: column;
                 align-items: center;
             }
             
-            .stat-card {
+            .framework-tab {
                 width: 100%;
-                max-width: 100%;
+                max-width: 300px;
+                justify-content: center;
             }
+            
+            h1 {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+        }
+
+        /* Animation for new elements */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease forwards;
         }
     </style>
 </head>
 <body>
     <div class="header">
-        <h1><i class="fas fa-car"></i> FiveM Vehicle Configuration Editor</h1>
-        <div class="subtitle">Manage and export vehicle configurations for both ESX and QBCore frameworks</div>
+        <h1>
+            <i class="fas fa-car"></i> FiveM Vehicle Configuration Editor 
+            <span class="header-badge">ESX & QBCore</span>
+        </h1>
+        <div class="subtitle">Advanced editor for managing vehicle configurations. Supports both ESX and QBCore frameworks with real-time preview and seamless import/export.</div>
         
         <div class="framework-tabs">
             <div class="framework-tab esx-tab active" data-framework="esx">
@@ -493,7 +740,17 @@
             <li><strong>Add vehicles</strong> with model name, display name, price, and other attributes</li>
             <li><strong>Import existing configurations</strong> to edit them visually</li>
             <li><strong>Export to Lua</strong> when finished to get the correctly formatted code for your framework</li>
+            <li><strong>Search and filter</strong> vehicles using the search bar and category tabs</li>
+            <li><strong>Duplicate vehicles</strong> to quickly create similar entries</li>
         </ul>
+        
+        <div class="esx-info">
+            <strong>ESX Note:</strong> Exports in the format expected by esx_vehicleshop. Ensure you have the latest version.
+        </div>
+        
+        <div class="qb-info">
+            <strong>QBCore Note:</strong> Exports in QBShared.Vehicles format compatible with qb-core.
+        </div>
     </div>
 
     <div class="toolbar">
@@ -531,17 +788,45 @@
     
     <div class="stats">
         <div class="stat-card">
-            <div class="stat-label">Total Vehicles</div>
+            <div class="stat-icon">
+                <i class="fas fa-car"></i>
+            </div>
             <div class="stat-value" id="total-vehicles">0</div>
+            <div class="stat-label">Total Vehicles</div>
         </div>
         <div class="stat-card">
-            <div class="stat-label">Categories</div>
+            <div class="stat-icon">
+                <i class="fas fa-tags"></i>
+            </div>
             <div class="stat-value" id="total-categories">0</div>
+            <div class="stat-label">Categories</div>
         </div>
         <div class="stat-card">
-            <div class="stat-label">Active Framework</div>
+            <div class="stat-icon">
+                <i class="fas fa-code"></i>
+            </div>
             <div class="stat-value" id="active-framework">ESX</div>
+            <div class="stat-label">Active Framework</div>
         </div>
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-coins"></i>
+            </div>
+            <div class="stat-value">$<span id="total-price">0</span></div>
+            <div class="stat-label">Total Vehicle Value</div>
+        </div>
+    </div>
+    
+    <div class="search-bar">
+        <i class="fas fa-search search-icon"></i>
+        <input type="text" id="search-vehicles" placeholder="Search vehicles by name, model or category...">
+    </div>
+    
+    <div class="category-tabs" id="category-tabs">
+        <div class="category-tab active" data-category="all">
+            <i class="fas fa-list"></i> All Vehicles <span class="count" id="all-count">0</span>
+        </div>
+        <!-- Category tabs will be generated here -->
     </div>
     
     <div id="vehicle-container">
@@ -571,9 +856,11 @@
         // State management
         const state = {
             vehicles: JSON.parse(localStorage.getItem('vehicles') || '[]') || [],
-            categories: JSON.parse(localStorage.getItem('categories') || '[]') || ['super', 'sedan', 'suv', 'motorcycle'],
-            shopTypes: new Set(['none', 'cardealer', 'air', 'boat', 'bike']),
-            framework: localStorage.getItem('framework') || 'esx'
+            categories: JSON.parse(localStorage.getItem('categories') || '[]') || ['super', 'sedan', 'suv', 'motorcycle', 'compact'],
+            shopTypes: new Set(['none', 'cardealer', 'air', 'boat', 'bike', 'luxury']),
+            framework: localStorage.getItem('framework') || 'esx',
+            activeCategory: 'all',
+            searchQuery: ''
         };
 
         // DOM elements
@@ -593,12 +880,17 @@
             totalVehicles: document.getElementById('total-vehicles'),
             totalCategories: document.getElementById('total-categories'),
             activeFramework: document.getElementById('active-framework'),
-            vehicleContainer: document.getElementById('vehicle-container')
+            vehicleContainer: document.getElementById('vehicle-container'),
+            categoryTabs: document.getElementById('category-tabs'),
+            searchInput: document.getElementById('search-vehicles'),
+            allCount: document.getElementById('all-count'),
+            totalPrice: document.getElementById('total-price')
         };
 
         // Initialize the application
         function init() {
             renderCategories();
+            renderCategoryTabs();
             renderVehicles();
             setupEventListeners();
             updateStats();
@@ -619,6 +911,8 @@
                 icon.innerHTML = '<i class="fas fa-check-circle"></i>';
             } else if (type === 'error') {
                 icon.innerHTML = '<i class="fas fa-exclamation-circle"></i>';
+            } else if (type === 'warning') {
+                icon.innerHTML = '<i class="fas fa-exclamation-triangle"></i>';
             } else {
                 icon.innerHTML = '<i class="fas fa-info-circle"></i>';
             }
@@ -626,13 +920,20 @@
             elements.toast.classList.add('show');
             setTimeout(() => {
                 elements.toast.classList.remove('show');
-            }, 3000);
+            }, 3500);
         }
 
         // Update statistics
         function updateStats() {
             elements.totalVehicles.textContent = state.vehicles.length;
             elements.totalCategories.textContent = state.categories.length;
+            
+            // Calculate total price
+            const totalPrice = state.vehicles.reduce((sum, vehicle) => sum + (parseInt(vehicle.price) || 0), 0);
+            elements.totalPrice.textContent = totalPrice.toLocaleString();
+            
+            // Update all vehicles count
+            elements.allCount.textContent = state.vehicles.length;
         }
 
         // Get category counts
@@ -660,10 +961,51 @@
                     </div>
                 `).join('');
         }
+        
+        // Render category tabs
+        function renderCategoryTabs() {
+            const counts = getCategoryCounts();
+            
+            // Clear existing tabs (except the "All" tab)
+            const tabsToRemove = Array.from(elements.categoryTabs.querySelectorAll('.category-tab:not([data-category="all"])'));
+            tabsToRemove.forEach(tab => tab.remove());
+            
+            // Add tabs for each category
+            state.categories.forEach(category => {
+                const count = counts[category] || 0;
+                if (count > 0) {
+                    const tab = document.createElement('div');
+                    tab.className = `category-tab ${state.activeCategory === category ? 'active' : ''}`;
+                    tab.dataset.category = category;
+                    tab.innerHTML = `
+                        <i class="fas fa-folder"></i> ${category} <span class="count">${count}</span>
+                    `;
+                    elements.categoryTabs.appendChild(tab);
+                }
+            });
+        }
 
-        // Render vehicles
+        // Render vehicles with search and category filtering
         function renderVehicles() {
-            if (state.vehicles.length === 0) {
+            let filteredVehicles = [...state.vehicles];
+            
+            // Apply category filter
+            if (state.activeCategory !== 'all') {
+                filteredVehicles = filteredVehicles.filter(v => v.category === state.activeCategory);
+            }
+            
+            // Apply search filter
+            if (state.searchQuery) {
+                const query = state.searchQuery.toLowerCase();
+                filteredVehicles = filteredVehicles.filter(v => 
+                    (v.name && v.name.toLowerCase().includes(query)) ||
+                    (v.model && v.model.toLowerCase().includes(query)) ||
+                    (v.category && v.category.toLowerCase().includes(query)) ||
+                    (v.brand && v.brand.toLowerCase().includes(query))
+                );
+            }
+            
+            if (filteredVehicles.length === 0) {
                 elements.vehicleList.innerHTML = '';
                 elements.emptyState.style.display = 'block';
                 return;
@@ -671,39 +1013,53 @@
             
             elements.emptyState.style.display = 'none';
             
-            elements.vehicleList.innerHTML = state.vehicles
-                .map((vehicle, index) => `
-                    <div class="card vehicle-card">
+            elements.vehicleList.innerHTML = filteredVehicles
+                .map((vehicle, index) => {
+                    const originalIndex = state.vehicles.findIndex(v => 
+                        v.model === vehicle.model && 
+                        v.name === vehicle.name
+                    );
+                    
+                    return `
+                    <div class="card vehicle-card fade-in">
                         <div class="card-header">
-                            <div class="card-icon">
-                                <i class="fas fa-car"></i>
+                            <h3>${vehicle.name || 'New Vehicle'} ${vehicle.price > 1000000 ? '<span class="premium-badge">Premium</span>' : ''}</h3>
+                            <div class="vehicle-actions">
+                                <div class="action-button duplicate" data-index="${originalIndex}" title="Duplicate Vehicle">
+                                    <i class="fas fa-copy"></i>
+                                </div>
+                                <div class="action-button delete" data-index="${originalIndex}" title="Delete Vehicle">
+                                    <i class="fas fa-trash-alt"></i>
+                                </div>
                             </div>
-                            <h3>${vehicle.name || 'New Vehicle'}</h3>
+                        </div>
+                        <div class="vehicle-image">
+                            <div class="model-name">${vehicle.model || 'MODEL'}</div>
                         </div>
                         <div class="fields">
                             <div class="input-group">
                                 <label>Model</label>
                                 <input type="text" value="${vehicle.model}" 
-                                       placeholder="Model" data-index="${index}" data-field="model">
+                                       placeholder="Model" data-index="${originalIndex}" data-field="model">
                             </div>
                             <div class="input-group">
                                 <label>Name</label>
                                 <input type="text" value="${vehicle.name}" 
-                                       placeholder="Name" data-index="${index}" data-field="name">
+                                       placeholder="Name" data-index="${originalIndex}" data-field="name">
                             </div>
                             <div class="input-group">
                                 <label>Brand</label>
                                 <input type="text" value="${vehicle.brand}" 
-                                       placeholder="Brand" data-index="${index}" data-field="brand">
+                                       placeholder="Brand" data-index="${originalIndex}" data-field="brand">
                             </div>
                             <div class="input-group">
                                 <label>Price</label>
                                 <input type="number" value="${vehicle.price}" 
-                                       placeholder="Price" data-index="${index}" data-field="price">
+                                       placeholder="Price" data-index="${originalIndex}" data-field="price">
                             </div>
                             <div class="input-group">
                                 <label>Category</label>
-                                <select data-index="${index}" data-field="category">
+                                <select data-index="${originalIndex}" data-field="category">
                                     ${state.categories.map(c => `
                                         <option value="${c}" ${c === vehicle.category ? 'selected' : ''}>${c}</option>
                                     `).join('')}
@@ -711,29 +1067,43 @@
                             </div>
                             <div class="input-group">
                                 <label>Type</label>
-                                <select data-index="${index}" data-field="type">
+                                <select data-index="${originalIndex}" data-field="type">
                                     <option value="automobile" ${vehicle.type === 'automobile' ? 'selected' : ''}>Automobile</option>
                                     <option value="bike" ${vehicle.type === 'bike' ? 'selected' : ''}>Bike</option>
                                     <option value="boat" ${vehicle.type === 'boat' ? 'selected' : ''}>Boat</option>
                                     <option value="helicopter" ${vehicle.type === 'helicopter' ? 'selected' : ''}>Helicopter</option>
+                                    <option value="plane" ${vehicle.type === 'plane' ? 'selected' : ''}>Plane</option>
                                 </select>
                             </div>
                             <div class="input-group">
                                 <label>Shop Type</label>
-                                <select data-index="${index}" data-field="shop">
+                                <select data-index="${originalIndex}" data-field="shop">
                                     ${Array.from(state.shopTypes).map(s => `
                                         <option value="${s}" ${s === vehicle.shop ? 'selected' : ''}>${s}</option>
                                     `).join('')}
                                 </select>
                             </div>
-                        </div>
-                        <div class="actions">
-                            <button class="danger" data-index="${index}"><i class="fas fa-trash-alt"></i> Delete</button>
+                            <div class="input-group">
+                                <label>Fuel Type</label>
+                                <select data-index="${originalIndex}" data-field="fuelType">
+                                    <option value="petrol" ${vehicle.fuelType === 'petrol' ? 'selected' : ''}>Petrol</option>
+                                    <option value="diesel" ${vehicle.fuelType === 'diesel' ? 'selected' : ''}>Diesel</option>
+                                    <option value="electric" ${vehicle.fuelType === 'electric' ? 'selected' : ''}>Electric</option>
+                                    <option value="hybrid" ${vehicle.fuelType === 'hybrid' ? 'selected' : ''}>Hybrid</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <label>Trunk Capacity</label>
+                                <input type="number" value="${vehicle.trunk || 40}" 
+                                       placeholder="Trunk Capacity" data-index="${originalIndex}" data-field="trunk">
+                            </div>
                         </div>
                     </div>
-                `).join('');
+                `;
+                }).join('');
                 
             renderCategories();
+            renderCategoryTabs();
             updateStats();
         }
 
@@ -776,7 +1146,9 @@
                     price: parseInt(vehicleMatch[4]),
                     category: vehicleMatch[5],
                     type: vehicleMatch[6],
-                    shop: vehicleMatch[7]
+                    shop: vehicleMatch[7],
+                    fuelType: 'petrol',
+                    trunk: 40
                 });
             }
             
@@ -800,7 +1172,8 @@
                     vehicles.forEach(vehicle => {
                         luaContent += `\t{ model = '${vehicle.model}', name = '${vehicle.name}', brand = '${vehicle.brand}', ` +
                                       `price = ${vehicle.price}, category = '${vehicle.category}', ` +
-                                      `type = '${vehicle.type}', shop = '${vehicle.shop}' },\n`;
+                                      `type = '${vehicle.type}', shop = '${vehicle.shop}', ` +
+                                      `fuelType = '${vehicle.fuelType || 'petrol'}', trunk = ${vehicle.trunk || 40} },\n`;
                     });
                 });
                 luaContent = luaContent.slice(0, -2) + '\n}';
@@ -817,6 +1190,8 @@
                         luaContent += `\t\tcategory = '${vehicle.category}',\n`;
                         luaContent += `\t\ttype = '${vehicle.type}',\n`;
                         luaContent += `\t\tshop = '${vehicle.shop}',\n`;
+                        luaContent += `\t\tfuelType = '${vehicle.fuelType || 'petrol'}',\n`;
+                        luaContent += `\t\ttrunk = ${vehicle.trunk || 40},\n`;
                         luaContent += `\t},\n`;
                     });
                 });
@@ -830,8 +1205,8 @@
         function clearAllData() {
             if(confirm('⚠️ Are you sure you want to delete ALL vehicles and categories? This cannot be undone!')) {
                 state.vehicles = [];
-                state.categories = ['super', 'sedan', 'suv', 'motorcycle'];
-                state.shopTypes = new Set(['none', 'cardealer', 'air', 'boat', 'bike']);
+                state.categories = ['super', 'sedan', 'suv', 'motorcycle', 'compact'];
+                state.shopTypes = new Set(['none', 'cardealer', 'air', 'boat', 'bike', 'luxury']);
                 saveState();
                 init();
                 showToast('All data cleared successfully');
@@ -844,14 +1219,26 @@
                 model: '',
                 name: '',
                 brand: '',
-                price: 0,
+                price: 50000,
                 category: elements.categorySelect.value,
                 type: 'automobile',
-                shop: 'none'
+                shop: 'cardealer',
+                fuelType: 'petrol',
+                trunk: 40
             });
             renderVehicles();
             saveState();
             showToast('Vehicle added');
+        }
+        
+        // Duplicate vehicle
+        function duplicateVehicle(index) {
+            const vehicle = state.vehicles[index];
+            const newVehicle = {...vehicle, name: vehicle.name + ' (Copy)'};
+            state.vehicles.push(newVehicle);
+            renderVehicles();
+            saveState();
+            showToast('Vehicle duplicated');
         }
 
         // Set up event listeners
@@ -865,17 +1252,25 @@
                     state.vehicles[index][field] = target.value;
                     saveState();
                     renderCategories();
+                    renderCategoryTabs();
+                    updateStats();
                 }
             });
 
             // Delete vehicle
-            elements.vehicleList.addEventListener('click', e => {
-                if (e.target.closest('.danger')) {
-                    const index = e.target.closest('.danger').dataset.index;
+            document.addEventListener('click', e => {
+                if (e.target.closest('.action-button.delete')) {
+                    const index = e.target.closest('.action-button').dataset.index;
                     state.vehicles.splice(index, 1);
                     renderVehicles();
                     saveState();
                     showToast('Vehicle removed');
+                }
+                
+                // Duplicate vehicle
+                if (e.target.closest('.action-button.duplicate')) {
+                    const index = e.target.closest('.action-button').dataset.index;
+                    duplicateVehicle(index);
                 }
             });
 
@@ -888,6 +1283,7 @@
                 state.categories.push(newCat);
                 elements.newCategoryInput.value = '';
                 renderCategories();
+                renderCategoryTabs();
                 saveState();
                 showToast(`Added category: ${newCat}`);
             });
@@ -903,6 +1299,7 @@
                     state.vehicles = state.vehicles.filter(v => v.category !== category);
                     
                     renderCategories();
+                    renderCategoryTabs();
                     renderVehicles();
                     saveState();
                     showToast(`Removed category: ${category}`);
@@ -920,6 +1317,8 @@
                 input.accept = '.lua';
                 input.onchange = e => {
                     const file = e.target.files[0];
+                    if (!file) return;
+                    
                     const reader = new FileReader();
                     reader.onload = () => {
                         try {
@@ -931,7 +1330,8 @@
                             init();
                             showToast(`Imported ${vehicles.length} vehicles`);
                         } catch (e) {
-                            showToast('Invalid Lua file', 'error');
+                            console.error(e);
+                            showToast('Invalid Lua file format', 'error');
                         }
                     };
                     reader.readAsText(file);
@@ -941,14 +1341,18 @@
 
             // Save Lua
             elements.saveLuaBtn.addEventListener('click', () => {
-                const luaContent = generateLuaContent();
-                const blob = new Blob([luaContent], { type: 'text/plain' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = state.framework === 'esx' ? 'esx_vehicles.lua' : 'qb_vehicles.lua';
-                a.click();
-                showToast('Lua file exported');
+                try {
+                    const luaContent = generateLuaContent();
+                    const blob = new Blob([luaContent], { type: 'text/plain' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = state.framework === 'esx' ? 'esx_vehicles.lua' : 'qb_vehicles.lua';
+                    a.click();
+                    showToast('Lua file exported');
+                } catch (e) {
+                    showToast('Error generating Lua file', 'error');
+                }
             });
 
             // Clear all data
@@ -964,6 +1368,30 @@
                     saveState();
                     showToast(`Switched to ${state.framework.toUpperCase()} framework`);
                 });
+            });
+            
+            // Category tabs
+            elements.categoryTabs.addEventListener('click', e => {
+                const tab = e.target.closest('.category-tab');
+                if (tab) {
+                    // Remove active class from all tabs
+                    document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
+                    
+                    // Add active class to clicked tab
+                    tab.classList.add('active');
+                    
+                    // Update active category
+                    state.activeCategory = tab.dataset.category;
+                    
+                    // Re-render vehicles
+                    renderVehicles();
+                }
+            });
+            
+            // Search input
+            elements.searchInput.addEventListener('input', e => {
+                state.searchQuery = e.target.value.toLowerCase();
+                renderVehicles();
             });
         }
 
