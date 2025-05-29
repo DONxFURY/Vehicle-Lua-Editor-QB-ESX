@@ -1020,6 +1020,47 @@
                         v.name === vehicle.name
                     );
                     
+                    // Show QB-specific fields only when QB framework is selected
+                    const qbFields = state.framework === 'qb' ? `
+                        <div class="input-group">
+                            <label>Brand</label>
+                            <input type="text" value="${vehicle.brand || ''}" 
+                                   placeholder="Brand" data-index="${originalIndex}" data-field="brand">
+                        </div>
+                        <div class="input-group">
+                            <label>Type</label>
+                            <select data-index="${originalIndex}" data-field="type">
+                                <option value="automobile" ${vehicle.type === 'automobile' ? 'selected' : ''}>Automobile</option>
+                                <option value="bike" ${vehicle.type === 'bike' ? 'selected' : ''}>Bike</option>
+                                <option value="boat" ${vehicle.type === 'boat' ? 'selected' : ''}>Boat</option>
+                                <option value="helicopter" ${vehicle.type === 'helicopter' ? 'selected' : ''}>Helicopter</option>
+                                <option value="plane" ${vehicle.type === 'plane' ? 'selected' : ''}>Plane</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label>Shop Type</label>
+                            <select data-index="${originalIndex}" data-field="shop">
+                                ${Array.from(state.shopTypes).map(s => `
+                                    <option value="${s}" ${s === vehicle.shop ? 'selected' : ''}>${s}</option>
+                                `).join('')}
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label>Fuel Type</label>
+                            <select data-index="${originalIndex}" data-field="fuelType">
+                                <option value="petrol" ${vehicle.fuelType === 'petrol' ? 'selected' : ''}>Petrol</option>
+                                <option value="diesel" ${vehicle.fuelType === 'diesel' ? 'selected' : ''}>Diesel</option>
+                                <option value="electric" ${vehicle.fuelType === 'electric' ? 'selected' : ''}>Electric</option>
+                                <option value="hybrid" ${vehicle.fuelType === 'hybrid' ? 'selected' : ''}>Hybrid</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label>Trunk Capacity</label>
+                            <input type="number" value="${vehicle.trunk || 40}" 
+                                   placeholder="Trunk Capacity" data-index="${originalIndex}" data-field="trunk">
+                        </div>
+                    ` : '';
+                    
                     return `
                     <div class="card vehicle-card fade-in">
                         <div class="card-header">
@@ -1048,11 +1089,6 @@
                                        placeholder="Name" data-index="${originalIndex}" data-field="name">
                             </div>
                             <div class="input-group">
-                                <label>Brand</label>
-                                <input type="text" value="${vehicle.brand}" 
-                                       placeholder="Brand" data-index="${originalIndex}" data-field="brand">
-                            </div>
-                            <div class="input-group">
                                 <label>Price</label>
                                 <input type="number" value="${vehicle.price}" 
                                        placeholder="Price" data-index="${originalIndex}" data-field="price">
@@ -1065,38 +1101,7 @@
                                     `).join('')}
                                 </select>
                             </div>
-                            <div class="input-group">
-                                <label>Type</label>
-                                <select data-index="${originalIndex}" data-field="type">
-                                    <option value="automobile" ${vehicle.type === 'automobile' ? 'selected' : ''}>Automobile</option>
-                                    <option value="bike" ${vehicle.type === 'bike' ? 'selected' : ''}>Bike</option>
-                                    <option value="boat" ${vehicle.type === 'boat' ? 'selected' : ''}>Boat</option>
-                                    <option value="helicopter" ${vehicle.type === 'helicopter' ? 'selected' : ''}>Helicopter</option>
-                                    <option value="plane" ${vehicle.type === 'plane' ? 'selected' : ''}>Plane</option>
-                                </select>
-                            </div>
-                            <div class="input-group">
-                                <label>Shop Type</label>
-                                <select data-index="${originalIndex}" data-field="shop">
-                                    ${Array.from(state.shopTypes).map(s => `
-                                        <option value="${s}" ${s === vehicle.shop ? 'selected' : ''}>${s}</option>
-                                    `).join('')}
-                                </select>
-                            </div>
-                            <div class="input-group">
-                                <label>Fuel Type</label>
-                                <select data-index="${originalIndex}" data-field="fuelType">
-                                    <option value="petrol" ${vehicle.fuelType === 'petrol' ? 'selected' : ''}>Petrol</option>
-                                    <option value="diesel" ${vehicle.fuelType === 'diesel' ? 'selected' : ''}>Diesel</option>
-                                    <option value="electric" ${vehicle.fuelType === 'electric' ? 'selected' : ''}>Electric</option>
-                                    <option value="hybrid" ${vehicle.fuelType === 'hybrid' ? 'selected' : ''}>Hybrid</option>
-                                </select>
-                            </div>
-                            <div class="input-group">
-                                <label>Trunk Capacity</label>
-                                <input type="number" value="${vehicle.trunk || 40}" 
-                                       placeholder="Trunk Capacity" data-index="${originalIndex}" data-field="trunk">
-                            </div>
+                            ${qbFields}
                         </div>
                     </div>
                 `;
@@ -1129,27 +1134,35 @@
             // Different patterns for ESX and QBCore
             let vehiclePattern;
             if (state.framework === 'esx') {
-                vehiclePattern = /{[\s\S]*?model\s*=\s*'([^']+)'[\s\S]*?name\s*=\s*'([^']+)'[\s\S]*?brand\s*=\s*'([^']+)'[\s\S]*?price\s*=\s*(\d+)[\s\S]*?category\s*=\s*'([^']+)'[\s\S]*?type\s*=\s*'([^']+)'[\s\S]*?shop\s*=\s*'([^']+)'/g;
+                // ESX pattern: { model = 'blade', name = 'Blade', price = 15000, category = 'muscle' }
+                vehiclePattern = /model\s*=\s*'([^']+)'[\s\S]*?name\s*=\s*'([^']+)'[\s\S]*?price\s*=\s*(\d+)[\s\S]*?category\s*=\s*'([^']+)'/g;
             } else {
-                // QBCore pattern
-                vehiclePattern = /\[\s*'([^']+)'\s*\]\s*=\s*{[\s\S]*?name\s*=\s*'([^']+)'[\s\S]*?brand\s*=\s*'([^']+)'[\s\S]*?price\s*=\s*(\d+)[\s\S]*?category\s*=\s*'([^']+)'[\s\S]*?type\s*=\s*'([^']+)'[\s\S]*?shop\s*=\s*'([^']+)'/g;
+                // QBCore pattern: { model = 'asbo', name = 'Asbo', brand = 'Maxwell', price = 4000, category = 'compacts', type = 'automobile', shop = 'pdm' }
+                vehiclePattern = /model\s*=\s*'([^']+)'[\s\S]*?name\s*=\s*'([^']+)'[\s\S]*?brand\s*=\s*'([^']+)'[\s\S]*?price\s*=\s*(\d+)[\s\S]*?category\s*=\s*'([^']+)'[\s\S]*?type\s*=\s*'([^']+)'[\s\S]*?shop\s*=\s*'([^']+)'/g;
             }
             
             const vehicles = [];
             let vehicleMatch;
             
             while ((vehicleMatch = vehiclePattern.exec(luaContent)) !== null) {
-                vehicles.push({
+                const vehicle = {
                     model: vehicleMatch[1],
                     name: vehicleMatch[2],
-                    brand: vehicleMatch[3],
-                    price: parseInt(vehicleMatch[4]),
-                    category: vehicleMatch[5],
-                    type: vehicleMatch[6],
-                    shop: vehicleMatch[7],
-                    fuelType: 'petrol',
-                    trunk: 40
-                });
+                    price: parseInt(vehicleMatch[3]),
+                    category: vehicleMatch[4]
+                };
+                
+                if (state.framework === 'qb') {
+                    vehicle.brand = vehicleMatch[3];
+                    vehicle.price = parseInt(vehicleMatch[4]);
+                    vehicle.category = vehicleMatch[5];
+                    vehicle.type = vehicleMatch[6];
+                    vehicle.shop = vehicleMatch[7];
+                    vehicle.fuelType = 'petrol';
+                    vehicle.trunk = 40;
+                }
+                
+                vehicles.push(vehicle);
             }
             
             return vehicles;
@@ -1166,14 +1179,12 @@
             let luaContent = '';
             
             if (state.framework === 'esx') {
+                // ESX format
                 luaContent = 'return {\n';
                 Object.entries(grouped).forEach(([category, vehicles]) => {
                     luaContent += `\t--- ${category} (${vehicles.length})\n`;
                     vehicles.forEach(vehicle => {
-                        luaContent += `\t{ model = '${vehicle.model}', name = '${vehicle.name}', brand = '${vehicle.brand}', ` +
-                                      `price = ${vehicle.price}, category = '${vehicle.category}', ` +
-                                      `type = '${vehicle.type}', shop = '${vehicle.shop}', ` +
-                                      `fuelType = '${vehicle.fuelType || 'petrol'}', trunk = ${vehicle.trunk || 40} },\n`;
+                        luaContent += `\t{ model = '${vehicle.model}', name = '${vehicle.name}', price = ${vehicle.price}, category = '${vehicle.category}' },\n`;
                     });
                 });
                 luaContent = luaContent.slice(0, -2) + '\n}';
@@ -1183,13 +1194,14 @@
                 Object.entries(grouped).forEach(([category, vehicles]) => {
                     luaContent += `\t--- ${category} (${vehicles.length})\n`;
                     vehicles.forEach(vehicle => {
-                        luaContent += `\t['${vehicle.model}'] = {\n`;
+                        luaContent += `\t{\n`;
+                        luaContent += `\t\tmodel = '${vehicle.model}',\n`;
                         luaContent += `\t\tname = '${vehicle.name}',\n`;
-                        luaContent += `\t\tbrand = '${vehicle.brand}',\n`;
+                        luaContent += `\t\tbrand = '${vehicle.brand || 'Unknown'}',\n`;
                         luaContent += `\t\tprice = ${vehicle.price},\n`;
                         luaContent += `\t\tcategory = '${vehicle.category}',\n`;
-                        luaContent += `\t\ttype = '${vehicle.type}',\n`;
-                        luaContent += `\t\tshop = '${vehicle.shop}',\n`;
+                        luaContent += `\t\ttype = '${vehicle.type || 'automobile'}',\n`;
+                        luaContent += `\t\tshop = '${vehicle.shop || 'cardealer'}',\n`;
                         luaContent += `\t\tfuelType = '${vehicle.fuelType || 'petrol'}',\n`;
                         luaContent += `\t\ttrunk = ${vehicle.trunk || 40},\n`;
                         luaContent += `\t},\n`;
@@ -1215,17 +1227,22 @@
 
         // Add new vehicle
         function addVehicle() {
-            state.vehicles.push({
+            const baseVehicle = {
                 model: '',
                 name: '',
-                brand: '',
                 price: 50000,
-                category: elements.categorySelect.value,
-                type: 'automobile',
-                shop: 'cardealer',
-                fuelType: 'petrol',
-                trunk: 40
-            });
+                category: elements.categorySelect.value
+            };
+            
+            if (state.framework === 'qb') {
+                baseVehicle.brand = '';
+                baseVehicle.type = 'automobile';
+                baseVehicle.shop = 'cardealer';
+                baseVehicle.fuelType = 'petrol';
+                baseVehicle.trunk = 40;
+            }
+            
+            state.vehicles.push(baseVehicle);
             renderVehicles();
             saveState();
             showToast('Vehicle added');
@@ -1366,6 +1383,7 @@
                     state.framework = tab.dataset.framework;
                     elements.activeFramework.textContent = state.framework.toUpperCase();
                     saveState();
+                    renderVehicles();
                     showToast(`Switched to ${state.framework.toUpperCase()} framework`);
                 });
             });
