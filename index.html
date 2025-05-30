@@ -665,6 +665,11 @@
             letter-spacing: 1px;
         }
 
+        .export-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
         @media (max-width: 992px) {
             .toolbar, .bottom-toolbar {
                 grid-template-columns: 1fr;
@@ -672,6 +677,10 @@
             
             .vehicle-grid {
                 grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            }
+            
+            .export-buttons {
+                flex-direction: column;
             }
         }
 
@@ -700,6 +709,10 @@
             h1 {
                 flex-direction: column;
                 gap: 0.5rem;
+            }
+            
+            .bottom-toolbar {
+                grid-template-columns: 1fr;
             }
         }
 
@@ -739,13 +752,13 @@
             <li><strong>Add categories</strong> to organize your vehicles (e.g., "super", "sedan", "motorcycle")</li>
             <li><strong>Add vehicles</strong> with model name, display name, price, and other attributes</li>
             <li><strong>Import existing configurations</strong> to edit them visually</li>
-            <li><strong>Export to Lua</strong> when finished to get the correctly formatted code for your framework</li>
+            <li><strong>Export to Lua/SQL</strong> when finished to get the correctly formatted code for your framework</li>
             <li><strong>Search and filter</strong> vehicles using the search bar and category tabs</li>
             <li><strong>Duplicate vehicles</strong> to quickly create similar entries</li>
         </ul>
         
         <div class="esx-info">
-            <strong>ESX Note:</strong> Exports in the format expected by esx_vehicleshop. Ensure you have the latest version.
+            <strong>ESX Note:</strong> Supports both SQL (esx_vehicleshop.sql) and Lua formats. Ensure you have the latest version.
         </div>
         
         <div class="qb-info">
@@ -782,6 +795,7 @@
             <div class="actions">
                 <button id="add-vehicle" class="success"><i class="fas fa-plus"></i> Add Vehicle</button>
                 <button id="import-lua" class="secondary"><i class="fas fa-file-import"></i> Import Lua</button>
+                <button id="import-sql" class="secondary"><i class="fas fa-file-import"></i> Import SQL</button>
             </div>
         </div>
     </div>
@@ -842,7 +856,10 @@
 
     <div class="bottom-toolbar">
         <button id="clear-all" class="danger"><i class="fas fa-trash-alt"></i> Clear All Data</button>
-        <button id="save-lua" class="success"><i class="fas fa-download"></i> Download vehicle.lua</button>
+        <div class="export-buttons">
+            <button id="save-lua" class="success"><i class="fas fa-download"></i> Download vehicle.lua</button>
+            <button id="save-sql" class="success"><i class="fas fa-download"></i> Download vehicle.sql</button>
+        </div>
     </div>
 
     <div class="toast" id="toast">
@@ -869,6 +886,7 @@
             categorySelect: document.getElementById('category'),
             addVehicleBtn: document.getElementById('add-vehicle'),
             saveLuaBtn: document.getElementById('save-lua'),
+            saveSqlBtn: document.getElementById('save-sql'),
             addCategoryBtn: document.getElementById('add-category'),
             newCategoryInput: document.getElementById('new-category'),
             categoryList: document.getElementById('category-list'),
@@ -884,7 +902,9 @@
             categoryTabs: document.getElementById('category-tabs'),
             searchInput: document.getElementById('search-vehicles'),
             allCount: document.getElementById('all-count'),
-            totalPrice: document.getElementById('total-price')
+            totalPrice: document.getElementById('total-price'),
+            importLuaBtn: document.getElementById('import-lua'),
+            importSqlBtn: document.getElementById('import-sql')
         };
 
         // Initialize the application
@@ -1167,6 +1187,33 @@
             
             return vehicles;
         }
+        
+        // Parse SQL data
+        function parseSQLContent(sqlContent) {
+            const vehicles = [];
+            const categories = [];
+            
+            // Extract vehicle_categories
+            const categoryPattern = /\(\s*['"]([^'"]+)['"]\s*,\s*['"]([^'"]+)['"]\s*\)/g;
+            let categoryMatch;
+            while ((categoryMatch = categoryPattern.exec(sqlContent)) !== null) {
+                categories.push(categoryMatch[1]);
+            }
+            
+            // Extract vehicles
+            const vehiclePattern = /\(\s*['"]([^'"]+)['"]\s*,\s*['"]([^'"]+)['"]\s*,\s*(\d+)\s*,\s*['"]([^'"]+)['"]\s*\)/g;
+            let vehicleMatch;
+            while ((vehicleMatch = vehiclePattern.exec(sqlContent)) !== null) {
+                vehicles.push({
+                    name: vehicleMatch[1],
+                    model: vehicleMatch[2],
+                    price: parseInt(vehicleMatch[3]),
+                    category: vehicleMatch[4]
+                });
+            }
+            
+            return { vehicles, categories };
+        }
 
         // Generate Lua content based on framework
         function generateLuaContent() {
@@ -1211,6 +1258,52 @@
             }
 
             return luaContent;
+        }
+        
+        // Generate SQL content
+        function generateSQLContent() {
+            // Create the SQL string
+            let sql = `-- Generated by FiveM Vehicle Config Editor\n\n`;
+            sql += `DROP TABLE IF EXISTS \`vehicles\`;\n`;
+            sql += `CREATE TABLE IF NOT EXISTS \`vehicles\` (\n`;
+            sql += `  \`name\` varchar(60) COLLATE utf8mb4_unicode_ci NOT NULL,\n`;
+            sql += `  \`model\` varchar(60) COLLATE utf8mb4_unicode_ci NOT NULL,\n`;
+            sql += `  \`price\` int(11) NOT NULL,\n`;
+            sql += `  \`category\` varchar(60) COLLATE utf8mb4_unicode_ci DEFAULT NULL,\n`;
+            sql += `  PRIMARY KEY (\`model\`)\n`;
+            sql += `) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;\n\n`;
+            
+            // Insert vehicles
+            sql += `INSERT IGNORE INTO \`vehicles\` (\`name\`, \`model\`, \`price\`, \`category\`) VALUES\n`;
+            state.vehicles.forEach((vehicle, index) => {
+                sql += `    ("${vehicle.name}", "${vehicle.model}", ${vehicle.price}, "${vehicle.category}")`;
+                if (index < state.vehicles.length - 1) {
+                    sql += ',';
+                }
+                sql += '\n';
+            });
+            sql += `;\n\n`;
+            
+            sql += `DROP TABLE IF EXISTS \`vehicle_categories\`;\n`;
+            sql += `CREATE TABLE IF NOT EXISTS \`vehicle_categories\` (\n`;
+            sql += `  \`name\` varchar(60) COLLATE utf8mb4_unicode_ci NOT NULL,\n`;
+            sql += `  \`label\` varchar(60) COLLATE utf8mb4_unicode_ci NOT NULL,\n`;
+            sql += `  PRIMARY KEY (\`name\`)\n`;
+            sql += `) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;\n\n`;
+            
+            // Insert categories
+            sql += `INSERT IGNORE INTO \`vehicle_categories\` (\`name\`, \`label\`) VALUES\n`;
+            state.categories.forEach((category, index) => {
+                const label = category.charAt(0).toUpperCase() + category.slice(1);
+                sql += `    ("${category}", "${label}")`;
+                if (index < state.categories.length - 1) {
+                    sql += ',';
+                }
+                sql += '\n';
+            });
+            sql += `;\n`;
+            
+            return sql;
         }
 
         // Clear all data
@@ -1328,7 +1421,7 @@
             elements.firstVehicleBtn.addEventListener('click', addVehicle);
             
             // Import Lua
-            document.getElementById('import-lua').addEventListener('click', () => {
+            elements.importLuaBtn.addEventListener('click', () => {
                 const input = document.createElement('input');
                 input.type = 'file';
                 input.accept = '.lua';
@@ -1355,6 +1448,45 @@
                 };
                 input.click();
             });
+            
+            // Import SQL
+            elements.importSqlBtn.addEventListener('click', () => {
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = '.sql';
+                input.onchange = e => {
+                    const file = e.target.files[0];
+                    if (!file) return;
+                    
+                    const reader = new FileReader();
+                    reader.onload = () => {
+                        try {
+                            const { vehicles, categories } = parseSQLContent(reader.result);
+                            state.vehicles = vehicles;
+                            state.categories = categories;
+                            // Also set framework to ESX because SQL is for ESX
+                            state.framework = 'esx';
+                            // Update the framework tab
+                            document.querySelectorAll('.framework-tab').forEach(tab => {
+                                tab.classList.remove('active');
+                                if (tab.dataset.framework === 'esx') {
+                                    tab.classList.add('active');
+                                }
+                            });
+                            elements.activeFramework.textContent = 'ESX';
+                            
+                            saveState();
+                            init();
+                            showToast(`Imported ${vehicles.length} vehicles from SQL`);
+                        } catch (e) {
+                            console.error(e);
+                            showToast('Invalid SQL file format', 'error');
+                        }
+                    };
+                    reader.readAsText(file);
+                };
+                input.click();
+            });
 
             // Save Lua
             elements.saveLuaBtn.addEventListener('click', () => {
@@ -1369,6 +1501,22 @@
                     showToast('Lua file exported');
                 } catch (e) {
                     showToast('Error generating Lua file', 'error');
+                }
+            });
+            
+            // Save SQL
+            elements.saveSqlBtn.addEventListener('click', () => {
+                try {
+                    const sqlContent = generateSQLContent();
+                    const blob = new Blob([sqlContent], { type: 'text/plain' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'esx_vehicleshop.sql';
+                    a.click();
+                    showToast('SQL file exported');
+                } catch (e) {
+                    showToast('Error generating SQL file', 'error');
                 }
             });
 
